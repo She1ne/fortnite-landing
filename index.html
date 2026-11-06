@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORTNITE — Королевская Битва, Нулевая Высота и Экосистема Игр</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Russo One, Montserrat (900 Italic) и Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:ital,wght@0,800;0,900;1,900&family=Russo+One&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fn: {
+                            dark: '#090d1a',
+                            lobby: '#101935',
+                            storm: '#1e1136',
+                            yellow: '#f7e600',
+                            yellowHover: '#fff033',
+                            cyan: '#00d2ff',
+                            blue: '#0078ff',
+                            purple: '#a855f7',
+                            shield: '#00b4ff',
+                            hp: '#22c55e',
+                            overshield: '#38bdf8'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Russo One"', '"Montserrat"', 'sans-serif'],
+                        sans: ['"Inter"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Фирменная типографика в духе Burbank Big Condensed */
+        .fn-title {
+            font-family: 'Russo One', sans-serif;
+            text-transform: uppercase;
+            transform: skewX(-6deg);
+            letter-spacing: 0.02em;
+        }
+
+        .fn-title-italic {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        /* Фирменные скошенные кнопки Fortnite */
+        .fn-btn-yellow {
+            background: #f7e600;
+            color: #090d1a;
+            clip-path: polygon(4% 0, 100% 0, 96% 100%, 0% 100%);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+        .fn-btn-yellow:hover {
+            background: #fff24d;
+            transform: scale(1.03) translateY(-2px);
+            filter: drop-shadow(0 0 18px rgba(247, 230, 0, 0.55));
+        }
+        .fn-btn-yellow:active {
+            transform: scale(0.98);
+        }
+
+        .fn-btn-cyan {
+            background: rgba(0, 210, 255, 0.12);
+            color: #ffffff;
+            border: 2px solid #00d2ff;
+            clip-path: polygon(4% 0, 100% 0, 96% 100%, 0% 100%);
+            transition: all 0.2s ease;
+        }
+        .fn-btn-cyan:hover {
+            background: rgba(0, 210, 255, 0.28);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .fn-badge-skew {
+            clip-path: polygon(3% 0, 100% 0, 97% 100%, 0% 100%);
+        }
+
+        /* Фон лобби и свечение Нулевой Точки / Бури */
+        body {
+            background-color: #090d1a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .lobby-bg {
+            background: 
+                radial-gradient(circle at 75% 25%, rgba(0, 210, 255, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 20% 70%, rgba(168, 85, 247, 0.22) 0%, transparent 50%),
+                linear-gradient(180deg, #090d1a 0%, #101935 50%, #090d1a 100%);
+        }
+
+        .blueprint-grid-bg {
+            background-color: #0b1838;
+            background-image: 
+                linear-gradient(rgba(0, 210, 255, 0.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 210, 255, 0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        /* Анимация парения Боевого Автобуса и Нулевой Точки */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(1deg); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 0.95; transform: scale(1.08); }
+        }
+        @keyframes victorySlam {
+            0% { transform: scale(2.2) skewX(-6deg); opacity: 0; }
+            60% { transform: scale(0.95) skewX(-6deg); opacity: 1; }
+            100% { transform: scale(1) skewX(-6deg); opacity: 1; }
+        }
+
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+        .animate-zero-point {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+        .victory-banner-anim {
+            animation: victorySlam 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Стили тайлов сетки редактирования 3x3 */
+        .edit-tile {
+            transition: all 0.15s ease;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .edit-tile.tile-active {
+            background: linear-gradient(135deg, rgba(0, 180, 255, 0.85), rgba(0, 110, 255, 0.95));
+            border-color: #7dd3fc;
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.35), 0 0 12px rgba(0, 180, 255, 0.4);
+        }
+        .edit-tile.tile-cut {
+            background: rgba(15, 23, 42, 0.75);
+            border-color: rgba(148, 163, 184, 0.4);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+        }
+        .edit-tile.tile-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.85), rgba(185, 28, 28, 0.95));
+            border-color: #fca5a5;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Полоски здоровья и щита с диагональной насечкой */
+        .hud-bar-stripes {
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.15),
+                rgba(255, 255, 255, 0.15) 8px,
+                transparent 8px,
+                transparent 16px
+            );
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00d2ff;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-fn-yellow selection:text-fn-dark">
+
+    <!-- ВСПЛЫВАЮЩИЙ БАННЕР #1 КОРОЛЕВСКАЯ ПОБЕДА (По клику из HUD или 4 этапа матча) -->
+    <div id="victoryModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div class="relative max-w-2xl w-full text-center victory-banner-anim">
+            <!-- Лучи свечения позади баннера -->
+            <div class="absolute -inset-10 bg-gradient-to-r from-fn-cyan/30 via-fn-yellow/40 to-fn-purple/30 blur-3xl -z-10 rounded-full"></div>
+            
+            <!-- Верхняя плашка #1 -->
+            <div class="inline-block bg-fn-yellow text-fn-dark font-display text-3xl md:text-5xl px-8 py-2 fn-badge-skew shadow-lg mb-2">
+                #1 В МАТЧЕ
+            </div>
+            
+            <!-- Главный сине-золотой шеврон Победа -->
+            <div class="bg-gradient-to-r from-blue-900 via-fn-blue to-blue-900 border-y-4 border-fn-yellow py-6 px-6 shadow-[0_0_50px_rgba(0,210,255,0.6)]">
+                <h3 class="fn-title text-4xl sm:text-6xl font-black text-white tracking-wider drop-shadow-[0_4px_0_rgba(0,0,0,0.6)]">
+                    КОРОЛЕВСКАЯ ПОБЕДА!
+                </h3>
+                <p class="text-fn-cyan font-bold uppercase tracking-widest text-xs sm:text-sm mt-2">
+                    Все противники устранены • Остров взят под контроль
+                </p>
+            </div>
+
+            <!-- Статистика матча в стиле послематчевого экрана -->
+            <div class="mt-6 grid grid-cols-3 gap-3 bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 text-left">
+                <div class="bg-slate-800/70 p-3 rounded-lg border-l-4 border-fn-yellow">
+                    <div class="text-xs text-slate-400 uppercase font-semibold">Место в матче</div>
+                    <div class="fn-title text-2xl text-fn-yellow mt-0.5">1 / 100</div>
+                </div>
+                <div class="bg-slate-800/70 p-3 rounded-lg border-l-4 border-fn-cyan">
+                    <div class="text-xs text-slate-400 uppercase font-semibold">Точность стрельбы</div>
+                    <div class="fn-title text-2xl text-white mt-0.5">84%</div>
+                </div>
+                <div class="bg-slate-800/70 p-3 rounded-lg border-l-4 border-fn-purple">
+                    <div class="text-xs text-slate-400 uppercase font-semibold">Построено / Укрытий</div>
+                    <div class="fn-title text-2xl text-white mt-0.5">42 сегмента</div>
+                </div>
+            </div>
+
+            <button onclick="closeVictoryModal()" class="mt-6 fn-btn-yellow font-display text-lg px-10 py-3 cursor-pointer">
+                ВЕРНУТЬСЯ В ЛОББИ
+            </button>
+        </div>
+    </div>
+
+    <!-- 1. НАВИГАЦИОННАЯ ПАНЕЛЬ (HEADER) -->
+    <header class="sticky top-0 z-40 bg-[#090d1a]/90 backdrop-blur-xl border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Логотип FORTNITE в фирменном скошенном блочном стиле -->
+            <a href="#" class="flex items-center gap-3 group focus:outline-none">
+                <div class="bg-white text-[#090d1a] px-3.5 py-1.5 fn-badge-skew shadow-[0_0_20px_rgba(255,255,255,0.2)] group-hover:bg-fn-yellow transition-colors">
+                    <span class="fn-title text-2xl sm:text-3xl tracking-tight font-black block">FORTNITE</span>
+                </div>
+                <span class="hidden xl:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-slate-800/90 text-fn-cyan border border-fn-cyan/30">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 -ml-3.5"></span>
+                    UE 5.4 ONLINE
+                </span>
+            </a>
+
+            <!-- Навигация по секциям (Стиль вкладок верхнего меню Лобби) -->
+            <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+                <a href="#modes" class="px-3.5 py-2 rounded-lg text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-white hover:bg-white/10 transition">
+                    Режимы
+                </a>
+                <a href="#blueprint-trainer" class="px-3.5 py-2 rounded-lg text-sm font-bold uppercase tracking-wider text-fn-cyan hover:text-white hover:bg-fn-cyan/20 transition flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-fn-cyan"></span>
+                    Интерактив: Редакт
+                </a>
+                <a href="#mechanics" class="px-3.5 py-2 rounded-lg text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-white hover:bg-white/10 transition">
+                    Механики и Лут
+                </a>
+                <a href="#match-stages" class="px-3.5 py-2 rounded-lg text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-white hover:bg-white/10 transition">
+                    Этапы матча
+                </a>
+                <a href="#specs" class="px-3.5 py-2 rounded-lg text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-white hover:bg-white/10 transition">
+                    Системные требования
+                </a>
+            </nav>
+
+            <!-- Правый блок: Статус и Кнопка ИГРАТЬ -->
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex flex-col items-end text-right mr-1">
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        Серверы онлайн
+                    </div>
+                    <div class="text-[10px] text-slate-400 font-medium">Кроссплей • 120 FPS</div>
+                </div>
+
+                <a href="#platforms" class="fn-btn-yellow font-display text-sm sm:text-base px-6 py-2.5 font-black tracking-wider shadow-lg">
+                    ИГРАТЬ БЕСПЛАТНО
+                </a>
+
+                <!-- Мобильное меню (кнопка) -->
+                <button id="mobileMenuBtn" aria-label="Открыть меню" class="lg:hidden p-2.5 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-200 hover:text-fn-yellow">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Выпадающее мобильное меню -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-[#0c1326] border-b border-slate-800 px-4 pt-2 pb-5 space-y-2">
+            <a href="#modes" class="block px-4 py-2.5 rounded-lg font-bold uppercase text-sm text-slate-200 hover:bg-slate-800">Режимы игры</a>
+            <a href="#blueprint-trainer" class="block px-4 py-2.5 rounded-lg font-bold uppercase text-sm text-fn-cyan bg-fn-cyan/10">Интерактив: Тренажер Редакта 3x3</a>
+            <a href="#mechanics" class="block px-4 py-2.5 rounded-lg font-bold uppercase text-sm text-slate-200 hover:bg-slate-800">Механики и Классификация Арсенала</a>
+            <a href="#match-stages" class="block px-4 py-2.5 rounded-lg font-bold uppercase text-sm text-slate-200 hover:bg-slate-800">Анатомия Матча</a>
+            <a href="#specs" class="block px-4 py-2.5 rounded-lg font-bold uppercase text-sm text-slate-200 hover:bg-slate-800">Unreal Engine 5 и Требования</a>
+        </div>
+    </header>
+
+    <!-- 2. ГЛАВНЫЙ ЭКРАН (HERO SECTION) -->
+    <section class="relative lobby-bg pt-10 pb-20 lg:py-24 overflow-hidden border-b border-slate-800/80">
+        <!-- Фоновое свечение Бури и Нулевой Точки -->
+        <div class="pointer-events-none absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-fn-cyan/20 blur-[130px] animate-zero-point"></div>
+        <div class="pointer-events-none absolute bottom-10 left-10 w-80 h-80 rounded-full bg-fn-purple/25 blur-[120px]"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Левая колонка: Оффер и призыв к действию -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Верхний HUD-бейдж -->
+                    <div class="inline-flex items-center gap-2.5 bg-slate-900/90 border border-fn-cyan/40 px-4 py-2 rounded-lg shadow-[0_0_20px_rgba(0,210,255,0.15)]">
+                        <svg class="w-5 h-5 text-fn-cyan shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 17.91c-3.45-1.03-6-4.82-6-8.82V6.3l6-2.25 6 2.25v4.79c0 4-2.55 7.79-6 8.82z"/>
+                        </svg>
+                        <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-fn-cyan">
+                            КОРОЛЕВСКАЯ БИТВА • НУЛЕВАЯ ВЫСОТА • ПЕРЕЗАРЯДКА
+                        </span>
+                    </div>
+
+                    <!-- Главный заголовок -->
+                    <h1 class="fn-title text-4xl sm:text-6xl xl:text-7xl leading-[1.05] text-white drop-shadow-[0_6px_25px_rgba(0,0,0,0.7)]">
+                        ВЫСАЖИВАЙСЯ В <span class="text-transparent bg-clip-text bg-gradient-to-r from-fn-yellow via-amber-300 to-fn-cyan">ЭПИЦЕНТР</span> СОБЫТИЙ
+                    </h1>
+
+                    <!-- Подзаголовок -->
+                    <p class="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl font-medium">
+                        Масштабный тактический экшен на <strong class="text-white">100 игроков</strong>, мгновенное возведение укрытий в реальном времени, динамический паркур и целая экосистема игровых миров на базе графических технологий <strong class="text-fn-cyan">Unreal Engine 5</strong>. Выбирай свой стиль боя — со строительством или в чистом позиционном шутере!
+                    </p>
+
+                    <!-- Кнопки действий -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#platforms" class="fn-btn-yellow font-display text-lg px-9 py-4 font-black tracking-wide shadow-xl">
+                            ВЫБРАТЬ ПЛАТФОРМУ
+                        </a>
+                        <a href="#modes" class="fn-btn-cyan font-display text-lg px-8 py-4 tracking-wide">
+                            ИЗУЧИТЬ РЕЖИМЫ
+                        </a>
+                    </div>
+
+                    <!-- Ключевые показатели экосистемы -->
+                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-slate-800/90 max-w-xl">
+                        <div>
+                            <div class="fn-title text-2xl sm:text-3xl text-white">100</div>
+                            <div class="text-xs text-slate-400 uppercase font-semibold mt-0.5">Участников в матче</div>
+                        </div>
+                        <div>
+                            <div class="fn-title text-2xl sm:text-3xl text-fn-cyan">6+</div>
+                            <div class="text-xs text-slate-400 uppercase font-semibold mt-0.5">Глобальных режимов</div>
+                        </div>
+                        <div>
+                            <div class="fn-title text-2xl sm:text-3xl text-fn-yellow">UE 5.4</div>
+                            <div class="text-xs text-slate-400 uppercase font-semibold mt-0.5">Nanite & Lumen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая колонка: Стилизованная иллюстрация Боевого Автобуса + Интерактивный Виджет Игрового HUD -->
+                <div class="lg:col-span-5 space-y-5">
+                    
+                    <!-- Векторная сцена: Боевой Автобус и Энергия Нулевой Точки -->
+                    <div class="relative rounded-2xl bg-gradient-to-b from-[#132046] to-[#0b132b] border border-fn-cyan/30 p-6 overflow-hidden shadow-[0_0_50px_rgba(0,120,255,0.2)]">
+                        <!-- Декоративная сетка радара -->
+                        <div class="absolute inset-0 blueprint-grid-bg opacity-40"></div>
+                        
+                        <!-- Верхняя строка мини-карты / компаса HUD -->
+                        <div class="relative z-10 flex items-center justify-between text-xs font-mono font-bold text-slate-300 border-b border-slate-700/70 pb-3 mb-4">
+                            <span class="text-fn-cyan">СЗ • 315°</span>
+                            <div class="flex items-center gap-3">
+                                <span class="px-2 py-0.5 rounded bg-fn-purple/30 text-purple-300 border border-fn-purple/50">ФАЗА БУРИ 3</span>
+                                <span id="hudStormTimer" class="text-white font-extrabold">01:42</span>
+                            </div>
+                            <span class="text-fn-yellow">СВ • 45°</span>
+                        </div>
+
+                        <!-- Векторная иллюстрация Боевого Автобуса над островом -->
+                        <div class="relative z-10 h-48 flex items-center justify-center">
+                            <!-- Сфера Нулевой Точки на фоне -->
+                            <div class="absolute w-36 h-36 rounded-full bg-gradient-to-tr from-fn-cyan via-blue-500 to-fn-purple opacity-30 blur-xl animate-zero-point"></div>
+                            <div class="absolute w-28 h-28 rounded-full border-2 border-fn-cyan/40 animate-ping" style="animation-duration: 3.5s;"></div>
+
+                            <!-- SVG Боевого Автобуса с воздушным шаром -->
+                            <svg class="w-64 h-44 animate-float drop-shadow-[0_12px_20px_rgba(0,210,255,0.35)]" viewBox="0 0 260 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Купол воздушного шара -->
+                                <path d="M130 12C98 12 76 36 76 64C76 86 98 106 116 116H144C162 106 184 86 184 64C184 36 162 12 130 12Z" fill="url(#balloonGrad)" stroke="#ffffff" stroke-width="2.5"/>
+                                <!-- Полосы на шаре -->
+                                <path d="M130 12C112 28 104 46 104 64C104 84 114 102 122 116" stroke="#00d2ff" stroke-width="2" stroke-dasharray="4 3"/>
+                                <path d="M130 12C148 28 156 46 156 64C156 84 146 102 138 116" stroke="#00d2ff" stroke-width="2" stroke-dasharray="4 3"/>
+                                <!-- Пламя горелки (Синее пламя Fortnite) -->
+                                <circle cx="130" cy="122" r="6" fill="#00d2ff"/>
+                                <circle cx="130" cy="122" r="3" fill="#ffffff"/>
+                                <!-- Стропы крепления к крыше автобуса -->
+                                <line x1="116" y1="116" x2="108" y2="132" stroke="#94a3b8" stroke-width="2"/>
+                                <line x1="144" y1="116" x2="152" y2="132" stroke="#94a3b8" stroke-width="2"/>
+                                <!-- Корпус синего Боевого Автобуса -->
+                                <rect x="74" y="132" width="112" height="30" rx="6" fill="#1d4ed8" stroke="#60a5fa" stroke-width="2"/>
+                                <rect x="78" y="136" width="104" height="11" rx="2" fill="#0f172a"/>
+                                <!-- Разделители окон автобуса -->
+                                <line x1="98" y1="136" x2="98" y2="147" stroke="#3b82f6" stroke-width="2"/>
+                                <line x1="118" y1="136" x2="118" y2="147" stroke="#3b82f6" stroke-width="2"/>
+                                <line x1="138" y1="136" x2="138" y2="147" stroke="#3b82f6" stroke-width="2"/>
+                                <line x1="158" y1="136" x2="158" y2="147" stroke="#3b82f6" stroke-width="2"/>
+                                <!-- Желтая полоса вдоль борта -->
+                                <rect x="76" y="151" width="108" height="4" fill="#f7e600"/>
+                                <!-- Колеса автобуса -->
+                                <circle cx="96" cy="163" r="8" fill="#0f172a" stroke="#cbd5e1" stroke-width="3"/>
+                                <circle cx="164" cy="163" r="8" fill="#0f172a" stroke="#cbd5e1" stroke-width="3"/>
+                                <!-- Хвостовые турбины / Неоновый след -->
+                                <path d="M50 144L72 140V152L50 148Z" fill="#00d2ff" opacity="0.7"/>
+                                <defs>
+                                    <linearGradient id="balloonGrad" x1="76" y1="12" x2="184" y2="116" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#2563eb"/>
+                                        <stop offset="0.5" stop-color="#1e40af"/>
+                                        <stop offset="1" stop-color="#7e22ce"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+
+                        <!-- Счетчик живых игроков и ресурсов -->
+                        <div class="relative z-10 flex items-center justify-between bg-slate-950/80 rounded-xl px-4 py-3 border border-slate-800">
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-fn-cyan" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                                    </svg>
+                                    <span class="text-xs text-slate-400">ОСТАЛОСЬ:</span>
+                                    <span id="alivePlayersCount" class="fn-title text-lg text-white">18</span>
+                                </div>
+                                <div class="h-4 w-px bg-slate-800"></div>
+                                <div class="flex items-center gap-2 text-xs font-bold">
+                                    <span class="px-2 py-0.5 rounded bg-amber-900/50 text-amber-300 border border-amber-700/50" title="Дерево">🌲 500</span>
+                                    <span class="px-2 py-0.5 rounded bg-orange-900/50 text-orange-300 border border-orange-700/50" title="Камень">🧱 500</span>
+                                    <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-600" title="Металл">⚙️ 500</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Интерактивный виджет Игрового HUD (Щит + Здоровье + Сверхщит) -->
+                    <div class="rounded-2xl bg-[#0e172f]/95 border-2 border-slate-700/80 p-5 shadow-2xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-fn-cyan"></span>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-300">ИГРОВОЙ HUD ИГРОКА</span>
+                            </div>
+                            <!-- Переключатель: Со строительством / Нулевая высота (Overshield) -->
+                            <button id="toggleOvershieldBtn" onclick="toggleZeroBuildHud()" class="text-xs font-bold uppercase px-3 py-1 rounded-md bg-fn-cyan/15 text-fn-cyan border border-fn-cyan/40 hover:bg-fn-cyan/25 transition cursor-pointer">
+                                + Включить Сверхщит (Zero Build)
+                            </button>
+                        </div>
+
+                        <!-- Полоска Сверхщита (Overshield +50) — появляется в режиме Zero Build -->
+                        <div id="overshieldRow" class="hidden transition-all">
+                            <div class="flex justify-between text-xs font-bold mb-1">
+                                <span class="text-sky-300 flex items-center gap-1">⚡ СВЕРХЩИТ (АВТОПЕРЕЗАРЯДКА)</span>
+                                <span class="fn-title text-sky-300">50 / 50</span>
+                            </div>
+                            <div class="h-3.5 w-full bg-slate-900 rounded-md overflow-hidden p-0.5 border border-sky-400/50">
+                                <div class="h-full w-full bg-gradient-to-r from-sky-400 to-cyan-300 rounded-sm hud-bar-stripes"></div>
+                            </div>
+                        </div>
+
+                        <!-- Полоска Щита (Shield 100/100) -->
+                        <div>
+                            <div class="flex justify-between items-end mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-fn-cyan flex items-center gap-1.5">
+                                    🛡️ ЗАЩИТНЫЙ ЩИТ (SHIELD)
+                                </span>
+                                <span id="hudShieldValue" class="fn-title text-xl text-fn-cyan">100 <span class="text-xs text-slate-400">/ 100</span></span>
+                            </div>
+                            <div class="h-5 w-full bg-slate-950 rounded-lg overflow-hidden p-0.5 border border-slate-700">
+                                <div id="hudShieldBar" class="h-full w-full bg-gradient-to-r from-blue-600 via-fn-shield to-fn-cyan rounded-md hud-bar-stripes transition-all duration-300"></div>
+                            </div>
+                        </div>
+
+                        <!-- Полоска Здоровья (HP 100/100) -->
+                        <div>
+                            <div class="flex justify-between items-end mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                                    ➕ ЗДОРОВЬЕ (HP)
+                                </span>
+                                <span id="hudHpValue" class="fn-title text-xl text-emerald-400">100 <span class="text-xs text-slate-400">/ 100</span></span>
+                            </div>
+                            <div class="h-5 w-full bg-slate-950 rounded-lg overflow-hidden p-0.5 border border-slate-700">
+                                <div id="hudHpBar" class="h-full w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-400 rounded-md hud-bar-stripes transition-all duration-300"></div>
+                            </div>
+                        </div>
+
+                        <!-- Интерактивные кнопки теста HUD -->
+                        <div class="pt-1 flex items-center justify-between gap-2 text-xs">
+                            <button onclick="simulateStormTick()" class="flex-1 py-2 px-3 rounded-lg bg-purple-950/70 hover:bg-purple-900/80 text-purple-200 border border-purple-700/60 font-bold transition cursor-pointer">
+                                ⚡ Тест урона Бури (-25)
+                            </button>
+                            <button onclick="restoreFullShield()" class="flex-1 py-2 px-3 rounded-lg bg-blue-950/70 hover:bg-blue-900/80 text-fn-cyan border border-fn-cyan/40 font-bold transition cursor-pointer">
+                                🧪 Полное восстановление
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. СЕКЦИЯ «ЭКОСИСТЕМА И РЕЖИМЫ ИГРЫ» (В СТИЛЕ МЕНЮ DISCOVER) -->
+    <section id="modes" class="py-20 bg-[#0b1124] border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Заголовок и фильтры табов -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                    <div class="text-fn-cyan text-xs font-extrabold uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-fn-cyan rounded-full"></span>
+                        МЕНЮ ВЫБОРА РЕЖИМОВ (DISCOVER UI)
+                    </div>
+                    <h2 class="fn-title text-3xl sm:text-5xl text-white">
+                        ЭКОСИСТЕМА И РЕЖИМЫ ИГРЫ
+                    </h2>
+                </div>
+
+                <!-- Табы фильтрации -->
+                <div class="flex flex-wrap gap-2 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800" id="modeFilterTabs">
+                    <button onclick="filterModes('all')" data-filter="all" class="mode-tab active px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider bg-fn-yellow text-fn-dark transition cursor-pointer">
+                        Все режимы (6)
+                    </button>
+                    <button onclick="filterModes('br')" data-filter="br" class="mode-tab px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider text-slate-300 hover:text-white transition cursor-pointer">
+                        Королевская битва
+                    </button>
+                    <button onclick="filterModes('adventure')" data-filter="adventure" class="mode-tab px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider text-slate-300 hover:text-white transition cursor-pointer">
+                        Выживание и Драйв
+                    </button>
+                    <button onclick="filterModes('uefn')" data-filter="uefn" class="mode-tab px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider text-slate-300 hover:text-white transition cursor-pointer">
+                        Сообщество UEFN
+                    </button>
+                </div>
+            </div>
+
+            <!-- Сетка карточек режимов -->
+            <div id="modesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Карточки рендерятся и управляются через JS для мгновенного просмотра тактических деталей -->
+            </div>
+
+            <!-- Детальная панель выбранного режима (Открывается/обновляется при клике на любую карточку) -->
+            <div id="modeDetailBanner" class="mt-8 rounded-2xl bg-gradient-to-r from-[#131f42] via-[#172554] to-[#1e1b4b] border-2 border-fn-cyan/50 p-6 sm:p-8 shadow-[0_0_35px_rgba(0,210,255,0.15)]">
+                <!-- Заполняется динамически -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. УНИКАЛЬНЫЙ ИНТЕРАКТИВНЫЙ БЛОК «ТРЕНАЖЕР РЕДАКТИРОВАНИЯ ПОСТРОЕК (BLUEPRINT EDIT GRID 3x3)» -->
+    <section id="blueprint-trainer" class="py-20 blueprint-grid-bg border-b border-slate-800 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- Заголовок секции -->
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-fn-blue/20 border border-fn-cyan/50 text-fn-cyan text-xs font-extrabold uppercase tracking-widest mb-3">
+                    <span>КЛЮЧЕВАЯ ФИШКА ГЕЙМПЛЕЯ</span>
+                    <span>•</span>
+                    <span>КЛАВИША [G] — РЕДАКТИРОВАТЬ</span>
+                </div>
+                <h2 class="fn-title text-3xl sm:text-5xl text-white">
+                    ТРЕНАЖЕР РЕДАКТИРОВАНИЯ ПОСТРОЕК 3×3
+                </h2>
+                <p class="text-slate-300 mt-3 text-sm sm:text-base">
+                    В Fortnite любая возведенная стена — это тактический трансформер. Кликайте по синим ячейкам чертежа 3×3 ниже (или выберите готовый пресет), чтобы вырезать проемы и увидеть, какая архитектурная форма получится в реальном времени!
+                </p>
+            </div>
+
+            <!-- Основной интерфейс тренажера -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                
+                <!-- Левая колонка: Сетка 3x3 Blueprint UI -->
+                <div class="lg:col-span-6 bg-[#09132c]/95 border-2 border-fn-cyan/50 rounded-2xl p-6 sm:p-8 shadow-[0_0_40px_rgba(0,180,255,0.2)] flex flex-col justify-between">
+                    
+                    <!-- Верхняя панель: Выбор материала и Сброс -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold uppercase text-slate-400 mr-1">Материал:</span>
+                            <button onclick="setBuildMaterial('wood')" id="mat-wood" class="mat-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase bg-amber-600 text-white border border-amber-400 cursor-pointer">
+                                🌲 Дерево (150 HP)
+                            </button>
+                            <button onclick="setBuildMaterial('brick')" id="mat-brick" class="mat-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase bg-slate-800 text-slate-300 border border-slate-700 hover:text-white cursor-pointer">
+                                🧱 Камень (300 HP)
+                            </button>
+                            <button onclick="setBuildMaterial('metal')" id="mat-metal" class="mat-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase bg-slate-800 text-slate-300 border border-slate-700 hover:text-white cursor-pointer">
+                                ⚙️ Металл (500 HP)
+                            </button>
+                        </div>
+
+                        <button onclick="resetEditGrid()" class="px-3.5 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-500/50 text-xs font-extrabold uppercase tracking-wider transition cursor-pointer">
+                            СБРОСИТЬ ЧЕРТЕЖ (ПКМ)
+                        </button>
+                    </div>
+
+                    <!-- Интерактивная сетка 3x3 -->
+                    <div class="my-auto flex flex-col items-center">
+                        <div id="editGridContainer" class="grid grid-cols-3 gap-3 w-full max-w-[310px] aspect-square p-4 rounded-2xl bg-slate-950/90 border-2 border-fn-cyan/40 shadow-inner">
+                            <!-- 9 тайлов генерируются через JS -->
+                        </div>
+                        <p class="text-xs text-slate-400 mt-4 text-center">
+                            💡 <span class="text-fn-cyan font-semibold">Синий квадрат</span> — сплошной сегмент стены. <span class="text-slate-300 font-semibold">Темный квадрат</span> — вырезанный проем.
+                        </p>
+                    </div>
+
+                    <!-- Популярные киберспортивные пресеты эдитов -->
+                    <div class="mt-6 pt-5 border-t border-slate-800">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                            Быстрые пресеты популярных эдитов:
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="applyEditPreset([4])" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-fn-cyan hover:text-fn-dark text-xs font-bold text-slate-200 border border-slate-700 transition cursor-pointer">
+                                🪟 Центральное окно
+                            </button>
+                            <button onclick="applyEditPreset([1, 2, 5])" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-fn-yellow hover:text-fn-dark text-xs font-bold text-fn-yellow border border-fn-yellow/40 transition cursor-pointer">
+                                📐 Правый пик (Peanut Butter)
+                            </button>
+                            <button onclick="applyEditPreset([4, 7])" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-fn-cyan hover:text-fn-dark text-xs font-bold text-slate-200 border border-slate-700 transition cursor-pointer">
+                                🚪 Дверь
+                            </button>
+                            <button onclick="applyEditPreset([3, 4, 7])" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-fn-cyan hover:text-fn-dark text-xs font-bold text-slate-200 border border-slate-700 transition cursor-pointer">
+                                🚪🪟 Дверь с окном
+                            </button>
+                            <button onclick="applyEditPreset([4, 5, 7, 8])" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-fn-cyan hover:text-fn-dark text-xs font-bold text-slate-200 border border-slate-700 transition cursor-pointer">
+                                ⛩️ Правая арка
+                            </button>
+                            <button onclick="applyEditPreset([3, 4, 5, 6, 7, 8])" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-fn-cyan hover:text-fn-dark text-xs font-bold text-slate-200 border border-slate-700 transition cursor-pointer">
+                                🌉 Широкая арка
+                            </button>
+                            <button onclick="applyEditPreset([0, 1, 2, 3, 4, 5])" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-fn-cyan hover:text-fn-dark text-xs font-bold text-slate-200 border border-slate-700 transition cursor-pointer">
+                                🛡️ Низкий борт
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая колонка: Визуализация готовой постройки и Тактический разбор -->
+                <div class="lg:col-span-6 bg-[#09132c]/95 border-2 border-slate-700/80 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl">
+                    
+                    <div>
+                        <div class="flex items-center justify-between gap-2 pb-4 border-b border-slate-800">
+                            <div>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-fn-cyan block">РЕЗУЛЬТАТ КОНФИГУРАЦИИ</span>
+                                <h3 id="editResultTitle" class="fn-title text-2xl sm:text-3xl text-white mt-1">
+                                    ПОЛНАЯ ГЛУХАЯ СТЕНА
+                                </h3>
+                            </div>
+                            <span id="editStatusBadge" class="px-3 py-1 rounded-md text-xs font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                                ЧЕРТЕЖ ГОТОВ
+                            </span>
+                        </div>
+
+                        <!-- Динамический SVG-рендер результирующей архитектурной формы -->
+                        <div class="my-6 bg-slate-950/90 rounded-2xl border border-slate-800 p-6 flex flex-col items-center justify-center min-h-[250px] relative overflow-hidden">
+                            <div class="absolute top-3 left-4 text-[11px] font-mono text-slate-400">
+                                ПРОЧНОСТЬ: <span id="previewMaterialHp" class="text-amber-400 font-bold">150 / 150 HP (Дерево)</span>
+                            </div>
+                            <div class="absolute top-3 right-4 text-[11px] font-mono text-slate-400">
+                                ВЫРЕЗАНО ЯЧЕЕК: <span id="cutTilesCount" class="text-fn-cyan font-bold">0 / 9</span>
+                            </div>
+
+                            <!-- SVG-холст постройки -->
+                            <div id="wallArchitecturePreview" class="w-56 h-56 mt-4 flex items-center justify-center">
+                                <!-- Отрисовывается динамически в JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Тактическое применение выбранного эдита в бою -->
+                    <div class="bg-slate-900/90 rounded-xl p-5 border-l-4 border-fn-yellow">
+                        <div class="text-xs font-extrabold uppercase tracking-wider text-fn-yellow mb-1">
+                            ТАКТИЧЕСКОЕ ПРИМЕНЕНИЕ В МАТЧЕ:
+                        </div>
+                        <p id="editTacticalDesc" class="text-sm text-slate-200 leading-relaxed">
+                            Обеспечивает 100% защиту от прострелов спереди. Используется для мгновенного блокирования входящего урона, занятия бокса (Box Fight) и безопасного восстановления щита.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. СЕКЦИЯ «КЛЮЧЕВЫЕ МЕХАНИКИ И ЦВЕТОВАЯ КЛАССИФИКАЦИЯ АРСЕНАЛА» -->
+    <section id="mechanics" class="py-20 bg-[#090d1a] border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+            
+            <!-- Часть А: Современный Мувмент и Паркур -->
+            <div>
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <div class="text-fn-cyan text-xs font-extrabold uppercase tracking-widest mb-2">
+                        ДИНАМИКА И ПЕРЕМЕЩЕНИЕ
+                    </div>
+                    <h2 class="fn-title text-3xl sm:text-5xl text-white">
+                        СОВРЕМЕННЫЙ ТАКТИЧЕСКИЙ МУВМЕНТ
+                    </h2>
+                    <p class="text-slate-400 mt-3 text-sm sm:text-base">
+                        Акробатика и инерция позволяют преодолевать вертикальные преграды без потери темпа перестрелки.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Карточка 1: Тактический спринт -->
+                    <div class="bg-slate-900/80 border border-slate-800 hover:border-fn-cyan/60 rounded-2xl p-6 transition group">
+                        <div class="w-12 h-12 rounded-xl bg-fn-cyan/15 border border-fn-cyan/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                            ⚡
+                        </div>
+                        <h3 class="fn-title text-xl text-white mb-2">ТАКТИЧЕСКИЙ СПРИНТ</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Рывок с повышенной скоростью передвижения и увеличенной дальностью прыжка. Расходует восстанавливаемую шкалу выносливости.
+                        </p>
+                    </div>
+
+                    <!-- Карточка 2: Скольжение (Подкат) -->
+                    <div class="bg-slate-900/80 border border-slate-800 hover:border-fn-cyan/60 rounded-2xl p-6 transition group">
+                        <div class="w-12 h-12 rounded-xl bg-fn-purple/15 border border-fn-purple/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                            🛷
+                        </div>
+                        <h3 class="fn-title text-xl text-white mb-2">СКОЛЬЖЕНИЕ ПО СКЛОНАМ</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Уменьшает силуэт персонажа и позволяет вести прицельный огонь в движении, набирая высокую скорость при спуске с холмов.
+                        </p>
+                    </div>
+
+                    <!-- Карточка 3: Карабканье и Паркур -->
+                    <div class="bg-slate-900/80 border border-slate-800 hover:border-fn-cyan/60 rounded-2xl p-6 transition group">
+                        <div class="w-12 h-12 rounded-xl bg-fn-yellow/15 border border-fn-yellow/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                            🧗
+                        </div>
+                        <h3 class="fn-title text-xl text-white mb-2">КАРАБКАНЬЕ И БАРЬЕРЫ</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Подтягивание на высокие выступы крыш и мгновенное перепрыгивание через низкие ограждения и оконные проемы на бегу.
+                        </p>
+                    </div>
+
+                    <!-- Карточка 4: Выбивание с разбега -->
+                    <div class="bg-slate-900/80 border border-slate-800 hover:border-fn-cyan/60 rounded-2xl p-6 transition group">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                            🚪
+                        </div>
+                        <h3 class="fn-title text-xl text-white mb-2">ТАРАН ДВЕРЕЙ ПЛЕЧОМ</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            При спринте или подкате двери строений распахиваются ударом плеча, позволяя мгновенно врываться в здания без остановки.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Часть Б: Интерактивная Цветовая Классификация Внутриматчевого Арсенала -->
+            <div class="bg-gradient-to-b from-[#101935] to-[#0c1328] border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
+                    <div>
+                        <div class="text-fn-yellow text-xs font-extrabold uppercase tracking-widest mb-2">
+                            СИСТЕМА ГЕЙМПЛЕЙНОГО ЛУТА НА ОСТРОВЕ
+                        </div>
+                        <h3 class="fn-title text-2xl sm:text-4xl text-white">
+                            ЦВЕТОВАЯ КЛАССИФИКАЦИЯ АРСЕНАЛА В МАТЧЕ
+                        </h3>
+                        <p class="text-slate-300 text-sm mt-2 max-w-2xl">
+                            Все предметы, которые вы находите в сундуках, на полу или в грузах с припасами во время матча, делятся на 6 уровней эффективности. Нажмите на любой уровень, чтобы сравнить характеристики.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Кнопки переключения 6 уровней редкости лута -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8" id="rarityButtonsContainer">
+                    <!-- Заполняется через JS -->
+                </div>
+
+                <!-- Детальная карточка выбранного уровня редкости -->
+                <div id="rarityDetailPanel" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-950/80 rounded-2xl p-6 sm:p-8 border border-slate-800">
+                    <!-- Динамическое содержимое через JS -->
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 6. СЕКЦИЯ «АНАТОМИЯ МАТЧА: ОТ АВТОБУСА ДО КОРОЛЕВСКОЙ ПОБЕДЫ» -->
+    <section id="match-stages" class="py-20 bg-[#0d152c] border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <div class="text-fn-purple text-xs font-extrabold uppercase tracking-widest mb-2">
+                    ТАКТИЧЕСКИЙ ТАЙМЛАЙН ИГРЫ
+                </div>
+                <h2 class="fn-title text-3xl sm:text-5xl text-white">
+                    АНАТОМИЯ МАТЧА: 4 ФАЗЫ ДО ТОП-1
+                </h2>
+                <p class="text-slate-300 mt-3 text-sm sm:text-base">
+                    Каждый 20-минутный матч развивается по драматической дуге — от свободного падения над островом до напряженной дуэли в финальном кольце Бури.
+                </p>
+            </div>
+
+            <!-- Навигация по 4 этапам -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="matchPhaseTabs">
+                <!-- Генерируется через JS -->
+            </div>
+
+            <!-- Интерактивное окно активной фазы матча -->
+            <div id="matchPhaseContent" class="rounded-3xl bg-[#090f21] border-2 border-slate-800 p-6 sm:p-10 shadow-2xl">
+                <!-- Генерируется через JS -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 7. СЕКЦИЯ «ТЕХНОЛОГИИ UNREAL ENGINE 5 И СИСТЕМНЫЕ ТРЕБОВАНИЯ» -->
+    <section id="specs" class="py-20 bg-[#090d1a]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+            
+            <!-- Технологии Unreal Engine 5.4 и Системные требования ПК -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                
+                <!-- Левая часть: О технологиях UE 5 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-fn-cyan/15 border border-fn-cyan/40 text-fn-cyan text-xs font-extrabold uppercase tracking-wider">
+                        ФЛАГМАНСКИЙ ДВИЖОК EPIC GAMES
+                    </div>
+                    <h2 class="fn-title text-3xl sm:text-5xl text-white leading-tight">
+                        ТЕХНОЛОГИИ UNREAL ENGINE 5
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Fortnite выступает главной технологической витриной движка Unreal Engine 5, обеспечивая как фотореалистичное глобальное освещение, так и киберспортивный режим высокой частоты кадров.
+                    </p>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-fn-cyan/20 text-fn-cyan flex items-center justify-center font-display text-lg shrink-0">N</div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm uppercase">Виртуализированная геометрия Nanite</h4>
+                                <p class="text-xs text-slate-400 mt-1">Архитектура зданий, камни и деревья отрисовываются из миллионов микрополигонов в реальном времени без просадок детализации.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-fn-yellow/20 text-fn-yellow flex items-center justify-center font-display text-lg shrink-0">L</div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm uppercase">Глобальное освещение Lumen</h4>
+                                <p class="text-xs text-slate-400 mt-1">Динамическое преломление солнечного света, реалистичные отражения на воде и мгновенное изменение освещения при разрушении стен.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-fn-purple/20 text-purple-300 flex items-center justify-center font-display text-lg shrink-0">TSR</div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm uppercase">Temporal Super Resolution & Performance Mode</h4>
+                                <p class="text-xs text-slate-400 mt-1">Интеллектуальное масштабирование четкости 4K или облегченный режим рендеринга для стабильных 144–240+ FPS в турнирных матчах.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая часть: Интерактивный калькулятор Системных требований ПК -->
+                <div class="lg:col-span-7 bg-[#101935] border-2 border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+                        <div>
+                            <span class="text-xs font-extrabold uppercase text-fn-cyan">КОНФИГУРАЦИИ ПК</span>
+                            <h3 class="fn-title text-2xl sm:text-3xl text-white mt-0.5">СИСТЕМНЫЕ ТРЕБОВАНИЯ</h3>
+                        </div>
+
+                        <!-- Переключатель профилей -->
+                        <div class="flex flex-wrap gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                            <button onclick="selectSpecTier('min')" id="specBtn-min" class="spec-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase text-slate-400 hover:text-white transition cursor-pointer">
+                                Минимальные
+                            </button>
+                            <button onclick="selectSpecTier('rec')" id="specBtn-rec" class="spec-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase bg-fn-yellow text-fn-dark transition cursor-pointer">
+                                144+ FPS
+                            </button>
+                            <button onclick="selectSpecTier('epic')" id="specBtn-epic" class="spec-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase text-slate-400 hover:text-white transition cursor-pointer">
+                                Эпические (UE5)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Контент системных требований -->
+                    <div id="specDetailsContainer" class="mt-6 space-y-4">
+                        <!-- Заполняется через JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Выбор платформы с поддержкой полного кроссплея -->
+            <div id="platforms" class="pt-10 border-t border-slate-800/90">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <span class="text-fn-yellow text-xs font-extrabold uppercase tracking-widest">ЕДИНЫЙ ПРОГРЕСС И КРОССПЛЕЙ</span>
+                    <h3 class="fn-title text-3xl sm:text-4xl text-white mt-2">
+                        ВЫБЕРИТЕ ПЛАТФОРМУ ДЛЯ ВЫСАДКИ
+                    </h3>
+                    <p class="text-slate-400 text-sm mt-2">
+                        Играйте в одном отряде с друзьями независимо от устройства. Кликните на свою платформу, чтобы увидеть особенности версии.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <!-- Платформа 1: PC -->
+                    <button onclick="selectPlatform('pc')" id="plat-pc" class="platform-card text-left bg-slate-900/90 border-2 border-fn-yellow rounded-2xl p-6 transition hover:-translate-y-1 cursor-pointer">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-fn-yellow text-fn-dark font-extrabold text-xs uppercase">PC • EPIC GAMES</span>
+                            <span class="text-xs font-mono text-fn-cyan">До 240+ FPS</span>
+                        </div>
+                        <div class="fn-title text-2xl text-white mb-2">WINDOWS PC</div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Полная поддержка DirectX 12, Nanite, Lumen, настраиваемых биндов клавиатуры и режима Киберспортивной Производительности.
+                        </p>
+                    </button>
+
+                    <!-- Платформа 2: PlayStation 5 -->
+                    <button onclick="selectPlatform('ps5')" id="plat-ps5" class="platform-card text-left bg-slate-900/90 border-2 border-slate-800 hover:border-blue-500 rounded-2xl p-6 transition hover:-translate-y-1 cursor-pointer">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-blue-600/30 text-blue-300 border border-blue-500/40 font-extrabold text-xs uppercase">SONY CONSOLE</span>
+                            <span class="text-xs font-mono text-fn-cyan">4K 60 / 120 Гц</span>
+                        </div>
+                        <div class="fn-title text-2xl text-white mb-2">PLAYSTATION 5 & 4</div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Тактильная отдача геймпада DualSense, адаптивные триггеры для разных видов оружия и режим 120 FPS на PS5.
+                        </p>
+                    </button>
+
+                    <!-- Платформа 3: Xbox Series X|S -->
+                    <button onclick="selectPlatform('xbox')" id="plat-xbox" class="platform-card text-left bg-slate-900/90 border-2 border-slate-800 hover:border-emerald-500 rounded-2xl p-6 transition hover:-translate-y-1 cursor-pointer">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-extrabold text-xs uppercase">XBOX SERIES</span>
+                            <span class="text-xs font-mono text-fn-cyan">4K 60 / 120 Гц</span>
+                        </div>
+                        <div class="fn-title text-2xl text-white mb-2">XBOX SERIES X|S</div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Быстрая загрузка матчей благодаря архитектуре Velocity, освещение Lumen и поддержка режима 120 кадров в секунду.
+                        </p>
+                    </button>
+
+                    <!-- Платформа 4: Nintendo Switch -->
+                    <button onclick="selectPlatform('switch')" id="plat-switch" class="platform-card text-left bg-slate-900/90 border-2 border-slate-800 hover:border-rose-500 rounded-2xl p-6 transition hover:-translate-y-1 cursor-pointer">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded bg-rose-600/30 text-rose-300 border border-rose-500/40 font-extrabold text-xs uppercase">ПОРТАТИВНАЯ</span>
+                            <span class="text-xs font-mono text-fn-cyan">TV & Handheld</span>
+                        </div>
+                        <div class="fn-title text-2xl text-white mb-2">NINTENDO SWITCH</div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Портативный геймплей в любом месте, гироскопическое прицеливание контроллерами Joy-Con и общая учетная запись.
+                        </p>
+                    </button>
+                </div>
+
+                <!-- Информационная строка выбранной платформы -->
+                <div id="platformStatusBanner" class="mt-6 bg-slate-900/90 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-fn-yellow"></span>
+                        <span id="platformSelectedText" class="text-sm font-bold text-slate-200">
+                            Выбрана платформа: <strong class="text-fn-yellow">Windows PC</strong> — Доступна бесплатная загрузка через официальный клиент Epic Games.
+                        </span>
+                    </div>
+                    <button onclick="openVictoryModal()" class="fn-btn-yellow font-display text-sm px-6 py-2.5 shrink-0 cursor-pointer">
+                        ТЕСТ ЭКРАНА ПОБЕДЫ (#1)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 8. ФУТЕР -->
+    <footer class="bg-[#060913] border-t border-slate-800/90 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <div class="flex items-center gap-4">
+                <div class="bg-white text-[#090d1a] px-3 py-1 fn-badge-skew">
+                    <span class="fn-title text-xl font-black block">FORTNITE</span>
+                </div>
+                <span class="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-xs font-extrabold text-slate-300">
+                    12+
+                </span>
+                <span class="text-xs text-slate-400">
+                    Работает на движке <strong class="text-slate-200">Unreal Engine 5</strong>
+                </span>
+            </div>
+
+            <div class="text-xs text-slate-500 text-center md:text-right max-w-md">
+                Информационный презентационный лендинг об игровых режимах, механиках и технологиях Fortnite. Без коммерческих предложений и внутриигровых покупок.
+            </div>
+
+            <a href="#" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-fn-yellow border border-slate-800 text-xs font-bold uppercase tracking-wider transition">
+                ↑ Наверх в лобби
+            </a>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT: ИНТЕРАКТИВНАЯ ЛОГИКА ВСЕХ БЛОКОВ -->
+    <script>
+        /* =========================================================================
+           1. МОБИЛЬНОЕ МЕНЮ, ТАЙМЕР БУРИ И ИНТЕРАКТИВНЫЙ ВИДЖЕТ HUD
+           ========================================================================= */
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Таймер Бури в Hero HUD
+        let stormSeconds = 102; // 01:42
+        setInterval(() => {
+            stormSeconds = stormSeconds > 0 ? stormSeconds - 1 : 120;
+            const mins = String(Math.floor(stormSeconds / 60)).padStart(2, '0');
+            const secs = String(stormSeconds % 60).padStart(2, '0');
+            const timerEl = document.getElementById('hudStormTimer');
+            if (timerEl) timerEl.textContent = `${mins}:${secs}`;
+        }, 1000);
+
+        // Состояние HUD игрока
+        let currentShield = 100;
+        let currentHp = 100;
+        let zeroBuildActive = false;
+
+        function updateHudBars() {
+            const shieldVal = document.getElementById('hudShieldValue');
+            const shieldBar = document.getElementById('hudShieldBar');
+            const hpVal = document.getElementById('hudHpValue');
+            const hpBar = document.getElementById('hudHpBar');
+
+            if (shieldVal && shieldBar) {
+                shieldVal.innerHTML = `${currentShield} <span class="text-xs text-slate-400">/ 100</span>`;
+                shieldBar.style.width = `${currentShield}%`;
+            }
+            if (hpVal && hpBar) {
+                hpVal.innerHTML = `${currentHp} <span class="text-xs text-slate-400">/ 100</span>`;
+                hpBar.style.width = `${currentHp}%`;
+            }
+        }
+
+        function toggleZeroBuildHud() {
+            zeroBuildActive = !zeroBuildActive;
+            const row = document.getElementById('overshieldRow');
+            const btn = document.getElementById('toggleOvershieldBtn');
+            if (zeroBuildActive) {
+                row.classList.remove('hidden');
+                btn.textContent = '✓ Сверхщит активен (+50 ЕД.)';
+                btn.classList.replace('text-fn-cyan', 'text-fn-yellow');
+            } else {
+                row.classList.add('hidden');
+                btn.textContent = '+ Включить Сверхщит (Zero Build)';
+                btn.classList.replace('text-fn-yellow', 'text-fn-cyan');
+            }
+        }
+
+        function simulateStormTick() {
+            if (currentShield >= 25) {
+                currentShield -= 25;
+            } else if (currentShield > 0) {
+                const rem = 25 - currentShield;
+                currentShield = 0;
+                currentHp = Math.max(10, currentHp - rem);
+            } else {
+                currentHp = Math.max(10, currentHp - 25);
+            }
+            updateHudBars();
+        }
+
+        function restoreFullShield() {
+            currentShield = 100;
+            currentHp = 100;
+            updateHudBars();
+        }
+
+        function openVictoryModal() {
+            const modal = document.getElementById('victoryModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeVictoryModal() {
+            const modal = document.getElementById('victoryModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* =========================================================================
+           2. СЕКЦИЯ «ЭКОСИСТЕМА И РЕЖИМЫ ИГРЫ» (DISCOVER UI)
+           ========================================================================= */
+        const gameModesData = [
+            {
+                id: 'battle-royale',
+                category: 'br',
+                title: 'КОРОЛЕВСКАЯ БИТВА',
+                subtitle: 'BATTLE ROYALE • 100 ИГРОКОВ',
+                tags: ['Тактика', 'Классика', 'Строительство'],
+                gradient: 'from-blue-600 via-indigo-700 to-purple-900',
+                accent: 'border-fn-cyan',
+                players: 'Соло / Парные / Трио / Отряды',
+                shortDesc: 'Классический режим на 100 игроков с добычей ресурсов, возведением защитных построек и сужающимся кольцом Бури.',
+                tacticalDetails: 'Собирайте дерево, камень и металл, мгновенно возводите стены, рампы и конусы, удерживайте высоту (Highground) и редактируйте постройки в бою на ближней дистанции.',
+                features: ['Механика строительства и редактирования 3×3', 'Сражение 100 участников на масштабном острове', 'Динамическая смена погоды, зон и тактических объектов']
+            },
+            {
+                id: 'zero-build',
+                category: 'br',
+                title: 'НУЛЕВАЯ ВЫСОТА',
+                subtitle: 'ZERO BUILD • ЧИСТЫЙ ШУТЕР',
+                tags: ['Позиционка', 'Сверхщит +50', 'Динамика'],
+                gradient: 'from-cyan-600 via-blue-700 to-slate-900',
+                accent: 'border-sky-400',
+                players: 'Соло / Парные / Трио / Отряды',
+                shortDesc: 'Чистый позиционный экшен без строительства. Каждый игрок получает автоматически перезаряжаемый Сверхщит на +50 единиц.',
+                tacticalDetails: 'Решающую роль играют точность стрельбы, использование естественного рельефа острова, карманных бункеров, ударных гранат, зиплайнов и тактического спринта.',
+                features: ['Перезаряжаемый Сверхщит (+50 сверх обычного щита)', 'Повышенное количество мобильных предметов и укрытий', 'Идеальный порог входа для любителей классических шутеров']
+            },
+            {
+                id: 'reload',
+                category: 'br',
+                title: 'ПЕРЕЗАРЯДКА',
+                subtitle: 'RELOAD • УРАГАННЫЙ ТЕМП',
+                tags: ['Динамика', 'Автовозрождение', 'Классика'],
+                gradient: 'from-fuchsia-600 via-purple-700 to-indigo-950',
+                accent: 'border-fuchsia-400',
+                players: 'До 40 игроков • Быстрые матчи',
+                shortDesc: 'Сверхдинамичный режим на компактной карте со знакомыми классическими локациями и автоматическим возрождением тиммейтов.',
+                tacticalDetails: 'Пока хотя бы один участник вашего отряда остается в строю, остальные бойцы автоматически возвращаются в игру после истечения таймера перезарядки. Устранения врагов сокращают таймер!',
+                features: ['Автоматический респаун пока жив хотя бы 1 союзник', 'Доступен как со строительством, так и в Нулевой высоте', 'Концентрированный классический пул легендарного оружия']
+            },
+            {
+                id: 'lego-fortnite',
+                category: 'adventure',
+                title: 'LEGO FORTNITE',
+                subtitle: 'ВЫЖИВАНИЕ И ОТКРЫТЫЙ МИР',
+                tags: ['Кооп', 'Крафтинг', 'Выживание'],
+                gradient: 'from-amber-500 via-orange-600 to-red-900',
+                accent: 'border-amber-400',
+                players: '1–8 игроков в общем мире',
+                shortDesc: 'Масштабное приключение на выживание в открытом мире из кубиков LEGO с созданием поселений, фермерством и исследованием пещер.',
+                tacticalDetails: 'Проектируйте собственные деревни, конструируйте управляемые транспортные средства и летающие дирижабли с реалистичной физикой, исследуйте пустынные и ледяные биомы.',
+                features: ['Полноценная кампания выживания и песочница', 'Инженерное конструирование транспорта с двигателями', 'Кооперативное развитие поселений с друзьями']
+            },
+            {
+                id: 'racing-festival',
+                category: 'adventure',
+                title: 'ROCKET RACING & FESTIVAL',
+                subtitle: 'СВЕРХЗВУКОВЫЕ ГОНКИ И РИТМ',
+                tags: ['Драйв', 'Аркада', 'Ритм-игра'],
+                gradient: 'from-emerald-500 via-teal-700 to-slate-900',
+                accent: 'border-emerald-400',
+                players: 'До 12 гонщиков / 4 музыканта',
+                shortDesc: 'Две полноценные игры внутри экосистемы: аркадные гонки с полетами по стенам и потолкам от создателей Rocket League, а также музыкальная сцена.',
+                tacticalDetails: 'В Rocket Racing вы управляете болидами с реактивным ускорением и заносами в воздухе без ограничений гравитации, а в Festival — исполняете партии ударных, баса, гитары или вокала.',
+                features: ['Многоуровневые трассы с полетами и уклонением от ловушек', 'Рейтинговые заезды от Бронзы до ранга «Нереальный»', 'Кооперативное исполнение треков на главной сцене']
+            },
+            {
+                id: 'creative-uefn',
+                category: 'uefn',
+                title: 'ТВОРЧЕСКИЙ РЕЖИМ (UEFN)',
+                subtitle: 'UNREAL EDITOR FOR FORTNITE',
+                tags: ['Тренировки', 'Box Fights', 'Сообщество'],
+                gradient: 'from-sky-500 via-indigo-600 to-violet-950',
+                accent: 'border-fn-yellow',
+                players: 'Тысячи авторских островов',
+                shortDesc: 'Бесконечная библиотека карт от сообщества и профессиональных студий, созданных на инструментарии Unreal Editor for Fortnite.',
+                tacticalDetails: 'Оттачивайте механику редактирования и аима на аренах Box Fights, Zone Wars и Piece Control, либо проходите кооперативные головоломки, паркур-испытания и сюжетные приключения.',
+                features: ['Арены для тренировки строительства и стрельбы (1v1, Zone Wars)', 'Полноценная поддержка языка программирования Verse', 'Мгновенный запуск любого острова по коду из меню']
+            }
+        ];
+
+        let selectedModeId = 'battle-royale';
+        let activeModeFilter = 'all';
+
+        function renderModes() {
+            const grid = document.getElementById('modesGrid');
+            const filtered = activeModeFilter === 'all'
+                ? gameModesData
+                : gameModesData.filter(m => m.category === activeModeFilter);
+
+            grid.innerHTML = filtered.map(mode => {
+                const isSelected = mode.id === selectedModeId;
+                return `
+                    <div onclick="selectMode('${mode.id}')" class="group cursor-pointer rounded-2xl bg-[#111a36] border-2 ${isSelected ? 'border-fn-yellow shadow-[0_0_25px_rgba(247,230,0,0.25)]' : 'border-slate-800 hover:border-fn-cyan/60'} overflow-hidden transition-all duration-200 flex flex-col justify-between">
+                        <div>
+                            <!-- Градиентная шапка карточки -->
+                            <div class="h-36 bg-gradient-to-br ${mode.gradient} p-5 relative overflow-hidden flex flex-col justify-between">
+                                <div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-white/10 blur-xl group-hover:scale-125 transition"></div>
+                                <div class="flex flex-wrap gap-1.5 relative z-10">
+                                    ${mode.tags.map(t => `<span class="px-2.5 py-0.5 rounded bg-slate-950/70 backdrop-blur-sm text-[11px] font-extrabold uppercase text-white border border-white/15">${t}</span>`).join('')}
+                                </div>
+                                <div class="relative z-10">
+                                    <div class="text-[11px] font-extrabold uppercase tracking-wider text-white/80">${mode.subtitle}</div>
+                                    <h3 class="fn-title text-2xl text-white mt-0.5">${mode.title}</h3>
+                                </div>
+                            </div>
+
+                            <!-- Описание -->
+                            <div class="p-5">
+                                <p class="text-sm text-slate-300 leading-relaxed">${mode.shortDesc}</p>
+                            </div>
+                        </div>
+
+                        <div class="px-5 pb-5 pt-2 flex items-center justify-between border-t border-slate-800/80 text-xs">
+                            <span class="text-slate-400 font-semibold">${mode.players}</span>
+                            <span class="font-extrabold uppercase tracking-wider ${isSelected ? 'text-fn-yellow' : 'text-fn-cyan group-hover:translate-x-1'} transition">
+                                ${isSelected ? '✓ Активно' : 'Подробнее →'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            renderModeDetailBanner();
+        }
+
+        function filterModes(category) {
+            activeModeFilter = category;
+            document.querySelectorAll('.mode-tab').forEach(btn => {
+                if (btn.dataset.filter === category) {
+                    btn.className = 'mode-tab active px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider bg-fn-yellow text-fn-dark transition cursor-pointer';
+                } else {
+                    btn.className = 'mode-tab px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider text-slate-300 hover:text-white transition cursor-pointer';
+                }
+            });
+            renderModes();
+        }
+
+        function selectMode(modeId) {
+            selectedModeId = modeId;
+            renderModes();
+        }
+
+        function renderModeDetailBanner() {
+            const mode = gameModesData.find(m => m.id === selectedModeId) || gameModesData[0];
+            const banner = document.getElementById('modeDetailBanner');
+            banner.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-7 space-y-3">
+                        <div class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-fn-yellow">
+                            <span>★ ВЫБРАННЫЙ РЕЖИМ:</span>
+                            <span>${mode.subtitle}</span>
+                        </div>
+                        <h3 class="fn-title text-2xl sm:text-4xl text-white">${mode.title}</h3>
+                        <p class="text-slate-200 text-sm sm:text-base leading-relaxed">${mode.tacticalDetails}</p>
+                    </div>
+                    <div class="lg:col-span-5 bg-slate-950/75 rounded-xl p-5 border border-slate-800 space-y-2.5">
+                        <div class="text-xs font-extrabold uppercase tracking-wider text-fn-cyan mb-2">Ключевые особенности режима:</div>
+                        ${mode.features.map(f => `
+                            <div class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-200">
+                                <span class="text-fn-yellow font-bold">▸</span>
+                                <span>${f}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        /* =========================================================================
+           3. ИНТЕРАКТИВНЫЙ ТРЕНАЖЕР РЕДАКТИРОВАНИЯ ПОСТРОЕК 3×3 (BLUEPRINT EDIT)
+           ========================================================================= */
+        // Индексы сетки 3x3:
+        // 0 1 2
+        // 3 4 5
+        // 6 7 8
+        // В Fortnite выбранные (серые) клетки вырезаются из стены, а синие остаются!
+        let cutTiles = new Set(); // Хранит индексы (0..8) вырезанных серых ячеек
+        let currentMaterial = 'wood';
+
+        const materialSpecs = {
+            wood: { name: 'Дерево', hp: '150 / 150 HP', fill: '#b45309', stroke: '#f59e0b', badgeClass: 'text-amber-400' },
+            brick: { name: 'Камень', hp: '300 / 300 HP', fill: '#9a3412', stroke: '#fb923c', badgeClass: 'text-orange-400' },
+            metal: { name: 'Металл', hp: '500 / 500 HP', fill: '#334155', stroke: '#94a3b8', badgeClass: 'text-slate-300' }
+        };
+
+        function setBuildMaterial(mat) {
+            currentMaterial = mat;
+            ['wood', 'brick', 'metal'].forEach(m => {
+                const btn = document.getElementById(`mat-${m}`);
+                if (m === mat) {
+                    btn.className = 'mat-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase bg-fn-cyan text-fn-dark border border-fn-cyan cursor-pointer';
+                } else {
+                    btn.className = 'mat-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase bg-slate-800 text-slate-300 border border-slate-700 hover:text-white cursor-pointer';
+                }
+            });
+            updateBlueprintGridUI();
+        }
+
+        function toggleEditTile(index) {
+            if (cutTiles.has(index)) {
+                cutTiles.delete(index);
+            } else {
+                cutTiles.add(index);
+            }
+            updateBlueprintGridUI();
+        }
+
+        function resetEditGrid() {
+            cutTiles.clear();
+            updateBlueprintGridUI();
+        }
+
+        function applyEditPreset(indicesArray) {
+            cutTiles = new Set(indicesArray);
+            updateBlueprintGridUI();
+        }
+
+        // Распознавание всех основных комбинаций чертежей стены Fortnite
+        function analyzeWallBlueprint(cutSet) {
+            const has = (i) => cutSet.has(i);
+            const size = cutSet.size;
+            const sortedKey = Array.from(cutSet).sort((a, b) => a - b).join(',');
+
+            if (size === 0) {
+                return {
+                    valid: true,
+                    title: 'ПОЛНАЯ ГЛУХАЯ СТЕНА',
+                    tactical: 'Обеспечивает 100% защиту от прострелов спереди. Используется для мгновенного блокирования урона, удержания бокса (Box Fight) и безопасного восстановления щита.'
+                };
+            }
+            if (size === 9) {
+                return {
+                    valid: false,
+                    title: 'НЕДОПУСТИМАЯ ОПОРА ЧЕРТЕЖА',
+                    tactical: 'Нельзя вырезать все 9 сегментов стены одновременно — постройка должна сохранять опору.'
+                };
+            }
+
+            // 1. Одиночные и двойные окна (средний ряд: 3, 4, 5)
+            if (sortedKey === '4') {
+                return {
+                    valid: true,
+                    title: 'СТЕНА С ЦЕНТРАЛЬНЫМ ОКНОМ',
+                    tactical: 'Классическая амбразура для точечного выстрела из дробовика с мгновенным сбросом чертежа обратно в глухую стену (Scroll Wheel Reset).'
+                };
+            }
+            if (sortedKey === '3' || sortedKey === '5') {
+                return {
+                    valid: true,
+                    title: `СТЕНА С ${sortedKey === '5' ? 'ПРАВЫМ' : 'ЛЕВЫМ'} ОКНОМ`,
+                    tactical: 'Боковое окно позволяет использовать преимущество камеры от правого плеча (Right-Hand Peek), оставаясь закрытым для противника.'
+                };
+            }
+            if (sortedKey === '3,4' || sortedKey === '4,5' || sortedKey === '3,5') {
+                return {
+                    valid: true,
+                    title: 'СТЕНА С ДВОЙНЫМ ОКНОМ',
+                    tactical: 'Позволяет контролировать сразу два угла обзора внутри бокса или вести огонь вдвоем с напарником.'
+                };
+            }
+
+            // 2. Дверные проемы (2 вертикальных тайла снизу)
+            if (sortedKey === '4,7' || sortedKey === '3,6' || sortedKey === '5,8') {
+                return {
+                    valid: true,
+                    title: 'СТЕНА С ДВЕРНЫМ ПРОЕМОМ',
+                    tactical: 'Создает распашную дверь для быстрого выхода из бокса или неожиданного маневра без разрушения всей стены.'
+                };
+            }
+
+            // 3. Дверь с окном
+            if (sortedKey === '3,4,7' || sortedKey === '4,5,7' || sortedKey === '3,5,6' || sortedKey === '3,5,8') {
+                return {
+                    valid: true,
+                    title: 'ДВЕРНОЙ ПРОЕМ С БОКОВЫМ ОКНОМ',
+                    tactical: 'Комбинированный эдит: вы можете отвлечь соперника открытием двери, а выстрел произвести через соседнее окно.'
+                };
+            }
+
+            // 4. Верхние треугольные скосы (Peanut Butter / Правый пик и Левый пик)
+            if (sortedKey === '1,2,5') {
+                return {
+                    valid: true,
+                    title: 'ПРАВЫЙ ТРЕУГОЛЬНЫЙ ПИК (PEANUT BUTTER)',
+                    tactical: 'Главный киберспортивный эдит в Fortnite! Дает идеальный угол обзора с правой стороны при прыжке, пока нижняя диагональ стены полностью закрывает ваш хитбокс.'
+                };
+            }
+            if (sortedKey === '0,1,3') {
+                return {
+                    valid: true,
+                    title: 'ЛЕВЫЙ ВЕРХНИЙ ТРЕУГОЛЬНЫЙ СКОС',
+                    tactical: 'Диагональный срез верхнего левого угла для быстрого выхода на рампу или стрельбы по противнику на ярус выше.'
+                };
+            }
+
+            // 5. Нижние треугольные проходы
+            if (sortedKey === '3,6,7' || sortedKey === '5,7,8') {
+                return {
+                    valid: true,
+                    title: 'НИЖНИЙ ДИАГОНАЛЬНЫЙ ПРОХОД',
+                    tactical: 'Позволяет проскользнуть в соседний бокс в подкате, сохраняя верхнюю часть стены для защиты головы от выстрелов сверху.'
+                };
+            }
+
+            // 6. Угловые и широкие арки
+            if (sortedKey === '4,5,7,8' || sortedKey === '3,4,6,7') {
+                return {
+                    valid: true,
+                    title: `${sortedKey === '4,5,7,8' ? 'ПРАВАЯ' : 'ЛЕВАЯ'} УГЛОВАЯ АРКА`,
+                    tactical: 'Г-образная опорная арка обеспечивает свободный проход отряда и позволяет моментально установить внутри рампу или конус.'
+                };
+            }
+            if (sortedKey === '3,4,5,6,7,8') {
+                return {
+                    valid: true,
+                    title: 'ШИРОКАЯ ПОЛУКРУГЛАЯ АРКА',
+                    tactical: 'Оставляет верхнюю несущую балку и боковые опоры. Отлично подходит для свободного перемещения внутри укрепленной базы.'
+                };
+            }
+
+            // 7. Низкое и среднее укрытие
+            if (sortedKey === '0,1,2,3,4,5') {
+                return {
+                    valid: true,
+                    title: 'НИЗКИЙ ЗАЩИТНЫЙ БОРТ (LOW WALL)',
+                    tactical: 'Превращает стену в укрытие по пояс. Позволяет вести обзор на 360 градусов и прятаться приседанием.'
+                };
+            }
+            if (sortedKey === '0,1,2') {
+                return {
+                    valid: true,
+                    title: 'СТЕНА В ДВА ЯРУСА (СРЕДНИЙ БОРТ)',
+                    tactical: 'Срезает только верхний ряд стены, позволяя стрелять в прыжке с полной защитой корпуса в положении стоя.'
+                };
+            }
+
+            // 8. Узкие вертикальные колонны
+            if (sortedKey === '1,2,4,5,7,8' || sortedKey === '0,1,3,4,6,7') {
+                return {
+                    valid: true,
+                    title: 'УЗКАЯ ЗАЩИТНАЯ КОЛОННА',
+                    tactical: 'Оставляет вертикальный столб шириной в 1 сегмент для тонкого укрытия и максимальной мобильности.'
+                };
+            }
+
+            // 9. Проверка связности оставшихся синих клеток (чтобы не висели в воздухе без связи)
+            const remaining = [];
+            for (let i = 0; i < 9; i++) {
+                if (!has(i)) remaining.push(i);
+            }
+            // Проверим связность графа оставшихся синих тайлов
+            const visited = new Set([remaining[0]]);
+            const queue = [remaining[0]];
+            while (queue.length > 0) {
+                const curr = queue.shift();
+                const r = Math.floor(curr / 3);
+                const c = curr % 3;
+                const neighbors = [];
+                if (r > 0) neighbors.push((r - 1) * 3 + c);
+                if (r < 2) neighbors.push((r + 1) * 3 + c);
+                if (c > 0) neighbors.push(r * 3 + (c - 1));
+                if (c < 2) neighbors.push(r * 3 + (c + 1));
+                for (const n of neighbors) {
+                    if (!has(n) && !visited.has(n)) {
+                        visited.add(n);
+                        queue.push(n);
+                    }
+                }
+            }
+
+            if (visited.size !== remaining.length) {
+                return {
+                    valid: false,
+                    title: 'РАЗРЫВ КОНСТРУКЦИИ (КРАСНЫЙ ЧЕРТЕЖ)',
+                    tactical: 'В Fortnite оставшиеся синие сегменты должны быть соединены друг с другом. Соедините синие клетки или выберите один из тактических пресетов!'
+                };
+            }
+
+            return {
+                valid: true,
+                title: 'КОМБИНИРОВАННАЯ ТАКТИЧЕСКАЯ ФОРМА',
+                tactical: 'Пользовательский вырез проема. Обеспечивает нестандартный угол прострела и сохраняет целостность несущих сегментов постройки.'
+            };
+        }
+
+        function updateBlueprintGridUI() {
+            const container = document.getElementById('editGridContainer');
+            const analysis = analyzeWallBlueprint(cutTiles);
+            const mat = materialSpecs[currentMaterial];
+
+            // 1. Отрисовка 9 интерактивных тайлов
+            let tilesHtml = '';
+            for (let i = 0; i < 9; i++) {
+                const isCut = cutTiles.has(i);
+                let tileClass = 'tile-active';
+                if (!analysis.valid && !isCut) {
+                    tileClass = 'tile-error';
+                } else if (isCut) {
+                    tileClass = 'tile-cut';
+                }
+
+                tilesHtml += `
+                    <button onclick="toggleEditTile(${i})" aria-label="Ячейка чертежа ${i + 1}" class="edit-tile ${tileClass} rounded-xl border-2 flex flex-col items-center justify-center relative cursor-pointer group">
+                        <span class="text-[10px] font-mono font-bold ${isCut ? 'text-slate-500' : 'text-white/80'}">${i + 1}</span>
+                        <span class="text-xs font-extrabold uppercase mt-0.5 ${isCut ? 'text-slate-400' : 'text-white'}">
+                            ${isCut ? 'ПРОЕМ' : 'СТЕНА'}
+                        </span>
+                    </button>
+                `;
+            }
+            container.innerHTML = tilesHtml;
+
+            // 2. Обновление текстовых статусов
+            document.getElementById('editResultTitle').textContent = analysis.title;
+            document.getElementById('editTacticalDesc').textContent = analysis.tactical;
+            document.getElementById('cutTilesCount').textContent = `${cutTiles.size} / 9`;
+
+            const hpEl = document.getElementById('previewMaterialHp');
+            hpEl.textContent = `${mat.hp} (${mat.name})`;
+            hpEl.className = `${mat.badgeClass} font-bold`;
+
+            const badge = document.getElementById('editStatusBadge');
+            if (analysis.valid) {
+                badge.textContent = 'ЧЕРТЕЖ ГОТОВ [G]';
+                badge.className = 'px-3 py-1 rounded-md text-xs font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+            } else {
+                badge.textContent = 'НЕДОПУСТИМЫЙ ЭДИТ';
+                badge.className = 'px-3 py-1 rounded-md text-xs font-extrabold uppercase bg-rose-500/20 text-rose-300 border border-rose-500/40';
+            }
+
+            // 3. Отрисовка SVG-превью результирующей стены 3x3
+            const previewEl = document.getElementById('wallArchitecturePreview');
+            let svgRects = '';
+            for (let i = 0; i < 9; i++) {
+                const row = Math.floor(i / 3);
+                const col = i % 3;
+                const x = 15 + col * 58;
+                const y = 15 + row * 58;
+                const isCut = cutTiles.has(i);
+
+                if (!isCut) {
+                    const fillCol = analysis.valid ? mat.fill : '#991b1b';
+                    const strokeCol = analysis.valid ? mat.stroke : '#f87171';
+                    svgRects += `
+                        <g>
+                            <rect x="${x}" y="${y}" width="54" height="54" rx="6" fill="${fillCol}" stroke="${strokeCol}" stroke-width="2.5"/>
+                            <line x1="${x + 6}" y1="${y + 18}" x2="${x + 48}" y2="${y + 18}" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                            <line x1="${x + 6}" y1="${y + 36}" x2="${x + 48}" y2="${y + 36}" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                        </g>
+                    `;
+                } else {
+                    svgRects += `
+                        <rect x="${x}" y="${y}" width="54" height="54" rx="6" fill="rgba(0,210,255,0.05)" stroke="rgba(0,210,255,0.25)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                    `;
+                }
+            }
+
+            previewEl.innerHTML = `
+                <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+                    <!-- Контур основания стены -->
+                    <rect x="10" y="10" width="180" height="180" rx="10" fill="#090d1a" stroke="#1e293b" stroke-width="2"/>
+                    ${svgRects}
+                </svg>
+            `;
+        }
+
+        /* =========================================================================
+           4. ИНТЕРАКТИВНАЯ ШКАЛА РЕДКОСТИ ГЕЙМПЛЕЙНОГО ЛУТА НА ОСТРОВЕ
+           ========================================================================= */
+        const lootRarities = [
+            {
+                id: 'common',
+                name: 'Обычный',
+                colorName: 'Серый тир ★',
+                hex: '#94a3b8',
+                bgClass: 'from-slate-700 to-slate-900',
+                borderClass: 'border-slate-400',
+                textClass: 'text-slate-300',
+                damage: 58,
+                fireRate: 70,
+                reloadSpeed: 60,
+                accuracy: 62,
+                source: 'Наземный лут в зданиях и на открытых локациях',
+                role: 'Базовое вооружение первых секунд после приземления. Позволяет принять стартовый бой до нахождения сундуков.'
+            },
+            {
+                id: 'uncommon',
+                name: 'Необычный',
+                colorName: 'Зеленый тир ★★',
+                hex: '#22c55e',
+                bgClass: 'from-emerald-700 to-slate-900',
+                borderClass: 'border-emerald-400',
+                textClass: 'text-emerald-400',
+                damage: 66,
+                fireRate: 72,
+                reloadSpeed: 68,
+                accuracy: 70,
+                source: 'Обычные сундуки и наземный лут на острове',
+                role: 'Надежная рабочая экипировка для начальной и средней фазы матча с уменьшенным временем перезарядки.'
+            },
+            {
+                id: 'rare',
+                name: 'Редкий',
+                colorName: 'Синий тир ★★★',
+                hex: '#00b4ff',
+                bgClass: 'from-blue-600 to-slate-900',
+                borderClass: 'border-fn-cyan',
+                textClass: 'text-fn-cyan',
+                damage: 76,
+                fireRate: 76,
+                reloadSpeed: 76,
+                accuracy: 78,
+                source: 'Сундуки, синие редкие контейнеры и тайники',
+                role: 'Золотая середина матча. Заметный прирост урона в голову и кучности стрельбы на средней дистанции.'
+            },
+            {
+                id: 'epic',
+                name: 'Эпический',
+                colorName: 'Фиолетовый тир ★★★★',
+                hex: '#a855f7',
+                bgClass: 'from-purple-600 to-slate-900',
+                borderClass: 'border-purple-400',
+                textClass: 'text-purple-400',
+                damage: 86,
+                fireRate: 82,
+                reloadSpeed: 85,
+                accuracy: 86,
+                source: 'Редкие синие сундуки, дроны-снабженцы и грузы с припасами',
+                role: 'Высокоточное вооружение для финальных кругов Бури. Обеспечивает быстрое разрушение вражеских построек.'
+            },
+            {
+                id: 'legendary',
+                name: 'Легендарный',
+                colorName: 'Золотой тир ★★★★★',
+                hex: '#f59e0b',
+                bgClass: 'from-amber-500 to-slate-900',
+                borderClass: 'border-amber-400',
+                textClass: 'text-amber-400',
+                damage: 94,
+                fireRate: 88,
+                reloadSpeed: 93,
+                accuracy: 92,
+                source: 'Грузы с припасами (Air Drops), хранилища и захват точек',
+                role: 'Элитный уровень стандартного арсенала. Минимальная задержка перезарядки и максимальный разовый урон.'
+            },
+            {
+                id: 'mythic',
+                name: 'Мифический',
+                colorName: 'Особый тир ✦',
+                hex: '#f7e600',
+                bgClass: 'from-yellow-500 via-amber-600 to-slate-900',
+                borderClass: 'border-fn-yellow',
+                textClass: 'text-fn-yellow',
+                damage: 100,
+                fireRate: 95,
+                reloadSpeed: 98,
+                accuracy: 98,
+                source: 'Внутриматчевые боссы ключевых локаций и центральные хранилища острова',
+                role: 'Уникальные экземпляры в единственном числе на весь матч с повышенной скорострельностью и особыми модификациями.'
+            }
+        ];
+
+        let activeRarityId = 'legendary';
+
+        function renderRarityInspector() {
+            const btnContainer = document.getElementById('rarityButtonsContainer');
+            btnContainer.innerHTML = lootRarities.map(r => {
+                const isSelected = r.id === activeRarityId;
+                return `
+                    <button onclick="selectRarity('${r.id}')" class="p-3.5 rounded-xl border-2 text-left transition cursor-pointer ${isSelected ? `${r.borderClass} bg-slate-900 shadow-lg scale-[1.02]` : 'border-slate-800 bg-slate-950/60 hover:border-slate-700'}">
+                        <div class="w-full h-1.5 rounded-full mb-2" style="background:${r.hex}"></div>
+                        <div class="fn-title text-sm text-white">${r.name}</div>
+                        <div class="text-[11px] font-bold ${r.textClass} mt-0.5">${r.colorName}</div>
+                    </button>
+                `;
+            }).join('');
+
+            const r = lootRarities.find(item => item.id === activeRarityId) || lootRarities[4];
+            const panel = document.getElementById('rarityDetailPanel');
+            panel.innerHTML = `
+                <div class="lg:col-span-5 bg-gradient-to-br ${r.bgClass} p-6 rounded-2xl border-2 ${r.borderClass} relative overflow-hidden">
+                    <div class="text-xs font-extrabold uppercase tracking-wider text-white/80">${r.colorName}</div>
+                    <h4 class="fn-title text-3xl text-white mt-1">${r.name.toUpperCase()} АРСЕНАЛ</h4>
+                    <div class="mt-4 pt-4 border-t border-white/15 space-y-2 text-xs text-white/90">
+                        <div><strong class="text-white uppercase">Где найти в матче:</strong> ${r.source}</div>
+                        <div><strong class="text-white uppercase">Тактическая роль:</strong> ${r.role}</div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-bold uppercase mb-1">
+                            <span class="text-slate-300">Базовый урон и пробитие построек</span>
+                            <span class="${r.textClass} fn-title">${r.damage}%</span>
+                        </div>
+                        <div class="h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800">
+                            <div class="h-full rounded-full transition-all duration-300" style="width:${r.damage}%; background:${r.hex}"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-bold uppercase mb-1">
+                            <span class="text-slate-300">Скорость перезарядки магазина</span>
+                            <span class="${r.textClass} fn-title">${r.reloadSpeed}%</span>
+                        </div>
+                        <div class="h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800">
+                            <div class="h-full rounded-full transition-all duration-300" style="width:${r.reloadSpeed}%; background:${r.hex}"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-bold uppercase mb-1">
+                            <span class="text-slate-300">Стабильность отдачи и кучность</span>
+                            <span class="${r.textClass} fn-title">${r.accuracy}%</span>
+                        </div>
+                        <div class="h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800">
+                            <div class="h-full rounded-full transition-all duration-300" style="width:${r.accuracy}%; background:${r.hex}"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectRarity(id) {
+            activeRarityId = id;
+            renderRarityInspector();
+        }
+
+        /* =========================================================================
+           5. СЕКЦИЯ «АНАТОМИЯ МАТЧА: 4 ФАЗЫ ОТ АВТОБУСА ДО ПОБЕДЫ»
+           ========================================================================= */
+        const matchPhases = [
+            {
+                step: '01',
+                title: 'ВЫСАДКА И ГЛАЙДИНГ',
+                subtitle: 'Маршрут Боевого Автобуса',
+                playersLeft: '100 ИГРОКОВ',
+                stormDamage: 'Буря еще не сформирована',
+                desc: 'Боевой Автобус пересекает остров по случайной траектории. Ваша задача — выбрать точку высадки (POI), рассчитать угол пикирования и раскрыть дельтаплан над самым низким рельефом, чтобы коснуться крыши раньше соперников.',
+                tips: ['Пикируйте над водой или низинами для позднего раскрытия дельтаплана', 'Следите за количеством дельтапланов вокруг вашей локации', 'Приземляйтесь сразу на оружие или сундук, а не на пустую крышу']
+            },
+            {
+                step: '02',
+                title: 'ФАРМ РЕСУРСОВ И ЭКИПИРОВКА',
+                subtitle: 'Сбор щитов, материалов и арсенала',
+                playersLeft: '65 ИГРОКОВ',
+                stormDamage: '1 ед. урона в секунду',
+                desc: 'Первые 3 минуты матча решают вашу готовность к бою. Заполните полоску защитного щита до 100 единиц, соберите сбалансированный набор оружия (дробовик + автомат + мобильность) и добудьте киркой минимум 500 единиц дерева и камня.',
+                tips: ['Бейте киркой по синим кругам уязвимости для удвоенной добычи ресурсов', 'Всегда держите в инвентаре быстрые средства восстановления щита', 'Модифицируйте оружие на верстаках в бункерах']
+            },
+            {
+                step: '03',
+                title: 'РОТАЦИЯ И УДЕРЖАНИЕ ВЫСОТЫ',
+                subtitle: 'Сужение Бури и позиционная борьба',
+                playersLeft: '24 ИГРОКА',
+                stormDamage: '2–5 ед. урона в секунду',
+                desc: 'Кольцо Бури стремительно сжимается. Отряды перемещаются (ротируются) в безопасную зону, используя рельеф, зиплайны и возводимые укрытия. Занятие господствующей высоты (Highground) дает полный визуальный контроль над локацией.',
+                tips: ['Начинайте ротацию заранее, чтобы не попасть под перекрестный огонь на краю Бури', 'В режиме со строительством переходите на прочный камень и металл', 'В Нулевой высоте занимайте крыши зданий и гребни холмов']
+            },
+            {
+                step: '04',
+                title: 'ФИНАЛЬНЫЙ КРУГ И ТОП-1',
+                subtitle: 'Решающая дуэль за Королевскую Победу',
+                playersLeft: '2 ИГРОКА (1v1)',
+                stormDamage: '10 ед. урона в секунду',
+                desc: 'Динамическая зона непрерывно движется вперед, не позволяя отсидеться в одном укрытии. Хладнокровный контроль дистанции, точное редактирование стен и своевременный выстрел приносят заветный баннер #1 КОРОЛЕВСКАЯ ПОБЕДА!',
+                tips: ['Не теряйте счет оставшихся противников в правом верхнем углу HUD', 'Используйте правый пик (Peanut Butter edit) для безопасного решающего выстрела', 'После устранения последнего соперника срабатывает замедление времени и баннер Победы!'],
+                isVictoryStep: true
+            }
+        ];
+
+        let currentPhaseIndex = 0;
+
+        function renderMatchAnatomy() {
+            const tabsEl = document.getElementById('matchPhaseTabs');
+            tabsEl.innerHTML = matchPhases.map((p, idx) => {
+                const active = idx === currentPhaseIndex;
+                return `
+                    <button onclick="selectMatchPhase(${idx})" class="text-left p-5 rounded-2xl border-2 transition cursor-pointer ${active ? 'bg-gradient-to-br from-blue-900/80 to-indigo-950 border-fn-yellow shadow-[0_0_25px_rgba(247,230,0,0.2)]' : 'bg-slate-900/70 border-slate-800 hover:border-slate-700'}">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="fn-title text-2xl ${active ? 'text-fn-yellow' : 'text-slate-500'}">ФАЗА ${p.step}</span>
+                            <span class="text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-950 text-fn-cyan">${p.playersLeft}</span>
+                        </div>
+                        <div class="fn-title text-lg text-white">${p.title}</div>
+                        <div class="text-xs text-slate-400 mt-1">${p.subtitle}</div>
+                    </button>
+                `;
+            }).join('');
+
+            const p = matchPhases[currentPhaseIndex];
+            const contentEl = document.getElementById('matchPhaseContent');
+            contentEl.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span class="px-3 py-1 rounded bg-fn-yellow text-fn-dark font-display text-sm">ЭТАП ${p.step} / 04</span>
+                            <span class="px-3 py-1 rounded bg-purple-950 text-purple-300 border border-purple-700/60 text-xs font-bold uppercase">⚡ Буря: ${p.stormDamage}</span>
+                        </div>
+                        <h3 class="fn-title text-3xl sm:text-4xl text-white">${p.title}</h3>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">${p.desc}</p>
+                        
+                        <div class="pt-2 space-y-2">
+                            <div class="text-xs font-extrabold uppercase tracking-wider text-fn-cyan">Тактические советы для этой фазы:</div>
+                            ${p.tips.map(tip => `
+                                <div class="flex items-start gap-2.5 text-sm text-slate-200">
+                                    <span class="text-fn-yellow font-bold">✓</span>
+                                    <span>${tip}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        ${p.isVictoryStep ? `
+                            <div class="pt-4">
+                                <button onclick="openVictoryModal()" class="fn-btn-yellow font-display text-base px-8 py-3.5 cursor-pointer">
+                                    🏆 ЗАПУСТИТЬ БАННЕР «#1 КОРОЛЕВСКАЯ ПОБЕДА!»
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Тактический радар сужения кольца Бури -->
+                    <div class="lg:col-span-5 bg-slate-950 rounded-2xl p-6 border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
+                        <div class="text-xs font-mono text-slate-400 mb-4 uppercase tracking-wider">Тактический радар кольца Бури (Фаза ${p.step})</div>
+                        <div class="relative w-52 h-52 rounded-full bg-purple-950/50 border-2 border-purple-500/60 flex items-center justify-center">
+                            <!-- Кольцо безопасной зоны (сжимается от 1 к 4 фазе) -->
+                            <div class="rounded-full bg-emerald-950/60 border-2 border-fn-cyan shadow-[0_0_25px_rgba(0,210,255,0.4)] flex items-center justify-center transition-all duration-500"
+                                 style="width: ${100 - currentPhaseIndex * 22}%; height: ${100 - currentPhaseIndex * 22}%;">
+                                <div class="text-center">
+                                    <div class="fn-title text-xl text-white">${p.playersLeft}</div>
+                                    <div class="text-[10px] text-fn-cyan uppercase font-bold">В безопасной зоне</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5 flex items-center gap-4 text-xs">
+                            <span class="flex items-center gap-1.5 text-fn-cyan"><span class="w-2.5 h-2.5 rounded-full bg-fn-cyan"></span> Безопасный круг</span>
+                            <span class="flex items-center gap-1.5 text-purple-300"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Зона Бури</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectMatchPhase(index) {
+            currentPhaseIndex = index;
+            renderMatchAnatomy();
+        }
+
+        /* =========================================================================
+           6. СИСТЕМНЫЕ ТРЕБОВАНИЯ И ВЫБОР ПЛАТФОРМЫ
+           ========================================================================= */
+        const specsData = {
+            min: {
+                title: 'Минимальная конфигурация (Базовые 60 FPS)',
+                gpu: 'Intel HD 4000 / AMD Radeon Vega 8',
+                cpu: 'Core i3-3225 3.3 ГГц',
+                ram: '8 ГБ ОЗУ',
+                os: 'Windows 10 / 11 (64-бит)',
+                storage: 'SSD / HDD ~35 ГБ (Базовый клиент)',
+                note: 'Подходит для запуска игры в режиме Производительности (Performance Mode) на облегченных настройках.'
+            },
+            rec: {
+                title: 'Рекомендуемая конфигурация (144+ FPS Киберспорт)',
+                gpu: 'NVIDIA GTX 1660 Super / RTX 2060 или AMD Radeon RX 5600 XT',
+                cpu: 'Intel Core i5-7300U 3.5 ГГц / AMD Ryzen 3 3300U или выше',
+                ram: '16 ГБ ОЗУ (Двухканальный режим)',
+                os: 'Windows 10 / 11 (64-бит) с DirectX 12',
+                storage: 'NVMe SSD ~60 ГБ',
+                note: 'Оптимальный баланс высокой частоты кадров, плавного редактирования построек и четкой видимости на дальних дистанциях.'
+            },
+            epic: {
+                title: 'Эпическая конфигурация (Nanite & Lumen UE 5.4)',
+                gpu: 'NVIDIA GeForce RTX 3070 / RTX 4070 или AMD Radeon RX 6700 XT (8+ ГБ VRAM)',
+                cpu: 'Intel Core i7-8700 / AMD Ryzen 7 3700X или новее',
+                ram: '16–32 ГБ ОЗУ DDR4 / DDR5',
+                os: 'Windows 11 (64-бит) DirectX 12 Ultimate',
+                storage: 'NVMe SSD ~90 ГБ (С пакетом текстур высокого разрешения)',
+                note: 'Активирует микрополигональную геометрию Nanite, глобальное освещение Lumen в реальном времени и виртуальные карты теней.'
+            }
+        };
+
+        function selectSpecTier(tierKey) {
+            ['min', 'rec', 'epic'].forEach(k => {
+                const btn = document.getElementById(`specBtn-${k}`);
+                if (k === tierKey) {
+                    btn.className = 'spec-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase bg-fn-yellow text-fn-dark transition cursor-pointer';
+                } else {
+                    btn.className = 'spec-btn px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase text-slate-400 hover:text-white transition cursor-pointer';
+                }
+            });
+
+            const s = specsData[tierKey];
+            const container = document.getElementById('specDetailsContainer');
+            container.innerHTML = `
+                <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-5">
+                    <div class="text-xs font-extrabold uppercase text-fn-yellow mb-3">${s.title}</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                            <div class="text-[11px] uppercase font-bold text-slate-400">Видеокарта (GPU)</div>
+                            <div class="font-bold text-white mt-1">${s.gpu}</div>
+                        </div>
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                            <div class="text-[11px] uppercase font-bold text-slate-400">Процессор (CPU)</div>
+                            <div class="font-bold text-white mt-1">${s.cpu}</div>
+                        </div>
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                            <div class="text-[11px] uppercase font-bold text-slate-400">Оперативная память</div>
+                            <div class="font-bold text-white mt-1">${s.ram}</div>
+                        </div>
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                            <div class="text-[11px] uppercase font-bold text-slate-400">Накопитель и ОС</div>
+                            <div class="font-bold text-white mt-1">${s.storage}</div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-4 pt-3 border-t border-slate-800/80">
+                        💡 ${s.note}
+                    </p>
+                </div>
+            `;
+        }
+
+        function selectPlatform(platKey) {
+            const labels = {
+                pc: '<strong class="text-fn-yellow">Windows PC</strong> — Доступна бесплатная загрузка через официальный лаунчер Epic Games с поддержкой DirectX 12 и режима Производительности.',
+                ps5: '<strong class="text-blue-400">PlayStation 5 / PS4</strong> — Поддержка 120 FPS, адаптивных триггеров DualSense и кроссплатформенного прогресса.',
+                xbox: '<strong class="text-emerald-400">Xbox Series X|S / One</strong> — Полная поддержка освещения Lumen, 4K 60/120 Гц и единого списка друзей.',
+                switch: '<strong class="text-rose-400">Nintendo Switch</strong> — Гибридный режим игры на ТВ и в портативном формате с прицеливанием гироскопом.'
+            };
+
+            ['pc', 'ps5', 'xbox', 'switch'].forEach(k => {
+                const el = document.getElementById(`plat-${k}`);
+                if (k === platKey) {
+                    el.classList.add('border-fn-yellow', 'shadow-[0_0_25px_rgba(247,230,0,0.2)]');
+                    el.classList.remove('border-slate-800');
+                } else {
+                    el.classList.remove('border-fn-yellow', 'shadow-[0_0_25px_rgba(247,230,0,0.2)]');
+                    el.classList.add('border-slate-800');
+                }
+            });
+
+            document.getElementById('platformSelectedText').innerHTML = `Выбрана платформа: ${labels[platKey]}`;
+        }
+
+        // Инициализация всех интерактивных компонентов при загрузке
+        window.addEventListener('DOMContentLoaded', () => {
+            renderModes();
+            updateBlueprintGridUI();
+            renderRarityInspector();
+            renderMatchAnatomy();
+            selectSpecTier('rec');
+        });
+    </script>
+</body>
+</html>
